@@ -18,7 +18,7 @@ class Student(db.Model):
     email = db.Column(db.String(120), unique=True, nullable=False)
     phone_no = db.Column(db.String(10), unique=True, nullable=False)
     password_hash = db.Column(db.String(255), nullable=False)
-
+    inside_hostel = db.Column(db.Boolean, default=True)
 
 class OtpVerification(db.Model):
     __tablename__ = "otp_verifications"

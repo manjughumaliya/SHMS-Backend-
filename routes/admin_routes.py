@@ -1,6 +1,6 @@
 from flask import Blueprint, request, jsonify, current_app
 from database import db
-from models import StudentRegistry
+from models import StudentRegistry, Student
 
 admin_bp = Blueprint("admin", __name__)
 
@@ -45,15 +45,27 @@ def add_college_id():
 
 @admin_bp.route("/college-ids", methods=["GET"])
 def get_college_ids():
-    ids = StudentRegistry.query.all()
+    registry_ids = StudentRegistry.query.order_by(StudentRegistry.id.asc()).all()
 
     result = []
 
-    for item in ids:
+    for item in registry_ids:
+        student = Student.query.filter_by(college_id=item.college_id).first()
+
         result.append({
             "id": item.id,
             "collegeId": item.college_id,
-            "isRegistered": item.is_registered
+            "fullName": student.full_name if student else "-",
+            "email": student.email if student else "-",
+            "phoneNo": student.phone_no if student else "-",
+            "passwordHash": student.password_hash if student else "-",
+            "status": (
+                "Inside"
+                if student and student.inside_hostel
+                else "Outside"
+                if student
+                else "Not Registered"
+            )
         })
 
     return jsonify(result), 200
