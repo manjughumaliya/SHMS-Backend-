@@ -48,3 +48,37 @@ class Parent(db.Model):
     phone_no = db.Column(db.String(10), nullable=False)
     student_college_id = db.Column(db.String(50), nullable=False)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
+
+
+class EntryExitQR(db.Model):
+    __tablename__ = "entry_exit_qr"
+
+    id = db.Column(db.Integer, primary_key=True)
+    token = db.Column(db.String(255), unique=True, nullable=False)
+    action = db.Column(db.String(10), nullable=False)  # ENTRY / EXIT
+    expires_at = db.Column(db.DateTime, nullable=False)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+
+
+class EntryExitLog(db.Model):
+    __tablename__ = "entry_exit_logs"
+
+    id = db.Column(db.Integer, primary_key=True)
+    student_id = db.Column(db.Integer, db.ForeignKey("students.id"), nullable=False)
+    action = db.Column(db.String(10), nullable=False)
+    timestamp = db.Column(db.DateTime, default=datetime.utcnow)
+
+    student = db.relationship("Student", backref="entry_exit_logs")
+
+
+class ParentNotification(db.Model):
+    __tablename__ = "parent_notifications"
+
+    id = db.Column(db.Integer, primary_key=True)
+    student_id = db.Column(db.Integer, db.ForeignKey("students.id"), nullable=False)
+    title = db.Column(db.String(150), nullable=False)
+    message = db.Column(db.Text, nullable=False)
+    is_read = db.Column(db.Boolean, default=False)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+
+    student = db.relationship("Student", backref="parent_notifications")

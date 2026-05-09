@@ -8,6 +8,8 @@ from routes.otp_routes import otp_bp
 from routes.student_routes import student_bp
 from routes.warden_routes import warden_bp
 from routes.parent_routes import parent_bp
+from routes.entry_exit_routes import entry_exit_bp
+from routes.notification_routes import notification_bp
 
 app = Flask(__name__)
 app.config.from_object(Config)
@@ -21,6 +23,8 @@ app.register_blueprint(otp_bp, url_prefix="/api/otp")
 app.register_blueprint(student_bp, url_prefix="/api/student")
 app.register_blueprint(warden_bp, url_prefix="/api/warden") 
 app.register_blueprint(parent_bp, url_prefix="/api/parent")
+app.register_blueprint(entry_exit_bp, url_prefix="/api/entry-exit")
+app.register_blueprint(notification_bp, url_prefix="/api/notifications")
 
 @app.route("/")
 def home():
