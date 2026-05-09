@@ -1,6 +1,6 @@
 from flask import Blueprint, request, jsonify
 from database import db
-from models import Parent, Student, OtpVerification
+from models import Parent, ParentNotification, Student, OtpVerification, EntryExitLog
 from datetime import datetime, timedelta
 import random
 import re
@@ -123,3 +123,46 @@ def verify_parent_login_otp():
             "insideHostel": student.inside_hostel
         }
     }), 200
+
+@parent_bp.route("/dashboard/<college_id>", methods=["GET"])
+def parent_dashboard(college_id):
+    try:
+        student = Student.query.filter_by(college_id=college_id).first()
+
+        if not student:
+            return jsonify({"message": "Student not found"}), 404
+
+        notifications = ParentNotification.query.filter_by(
+            student_id=student.id
+        ).order_by(ParentNotification.created_at.desc()).all()
+
+        logs = EntryExitLog.query.filter_by(
+            student_id=student.id
+        ).order_by(EntryExitLog.timestamp.desc()).all()
+
+        return jsonify({
+            "student": {
+                "name": student.full_name,
+                "collegeId": student.college_id,
+                "roomNo": getattr(student, "room_no", None),
+                "phoneNo": student.phone_no,
+                "email": student.email,
+                "insideHostel": student.inside_hostel
+            },
+            "notifications": [
+                {
+                    "message": n.message,
+                    "time": n.created_at.strftime("%Y-%m-%d %H:%M:%S")
+                } for n in notifications
+            ],
+            "logs": [
+                {
+                    "type": l.action,
+                    "date": l.timestamp.strftime("%Y-%m-%d"),
+                    "time": l.timestamp.strftime("%H:%M:%S")
+                } for l in logs
+            ]
+        }), 200
+
+    except Exception as e:
+        return jsonify({"message": "Server error", "error": str(e)}), 500

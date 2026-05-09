@@ -162,22 +162,34 @@ def get_student_logs(college_id):
 
 @entry_exit_bp.route("/stats", methods=["GET"])
 def get_stats():
-    today = date.today()
+    try:
+        today = date.today()
 
-    today_entries = EntryExitLog.query.filter(
-        db.func.date(EntryExitLog.timestamp) == today,
-        EntryExitLog.action == "ENTRY"
-    ).count()
+        # Today's entries
+        today_entries = EntryExitLog.query.filter(
+            db.func.date(EntryExitLog.timestamp) == today,
+            EntryExitLog.action == "ENTRY"
+        ).count()
 
-    today_exits = EntryExitLog.query.filter(
-        db.func.date(EntryExitLog.timestamp) == today,
-        EntryExitLog.action == "EXIT"
-    ).count()
+        # Today's exits
+        today_exits = EntryExitLog.query.filter(
+            db.func.date(EntryExitLog.timestamp) == today,
+            EntryExitLog.action == "EXIT"
+        ).count()
 
-    currently_out = Student.query.filter_by(inside_hostel=False).count()
+        # Students currently outside hostel
+        currently_out = Student.query.filter_by(
+            inside_hostel=False
+        ).count()
 
-    return jsonify({
-        "todayEntries": today_entries,
-        "todayExits": today_exits,
-        "currentlyOut": currently_out
-    }), 200
+        return jsonify({
+            "todayEntries": today_entries,
+            "todayExits": today_exits,
+            "currentlyOut": currently_out
+        }), 200
+
+    except Exception as e:
+        return jsonify({
+            "message": "Failed to fetch stats",
+            "error": str(e)
+        }), 500
