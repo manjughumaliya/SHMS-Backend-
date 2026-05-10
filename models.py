@@ -82,3 +82,34 @@ class ParentNotification(db.Model):
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
 
     student = db.relationship("Student", backref="parent_notifications")
+
+class LeaveRequest(db.Model):
+    __tablename__ = "leave_requests"
+
+    id = db.Column(db.Integer, primary_key=True)
+
+    student_id = db.Column(
+        db.Integer,
+        db.ForeignKey("students.id"),
+        nullable=False
+    )
+
+    leave_type = db.Column(db.String(100), nullable=False)
+    from_date = db.Column(db.Date, nullable=False)
+    to_date = db.Column(db.Date, nullable=False)
+    reason = db.Column(db.Text, nullable=False)
+
+    status = db.Column(db.String(20), default="Pending")  
+    # Pending / Approved / Rejected
+
+    approved_by_role = db.Column(db.String(20), nullable=True)
+    approved_by_id = db.Column(db.Integer, nullable=True)
+
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    updated_at = db.Column(
+        db.DateTime,
+        default=datetime.utcnow,
+        onupdate=datetime.utcnow
+    )
+
+    student = db.relationship("Student", backref="leave_requests")

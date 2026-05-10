@@ -10,6 +10,7 @@ from routes.warden_routes import warden_bp
 from routes.parent_routes import parent_bp
 from routes.entry_exit_routes import entry_exit_bp
 from routes.notification_routes import notification_bp
+from leave_routes import leave_bp
 
 app = Flask(__name__)
 app.config.from_object(Config)
@@ -25,6 +26,7 @@ app.register_blueprint(warden_bp, url_prefix="/api/warden")
 app.register_blueprint(parent_bp, url_prefix="/api/parent")
 app.register_blueprint(entry_exit_bp, url_prefix="/api/entry-exit")
 app.register_blueprint(notification_bp, url_prefix="/api/notifications")
+app.register_blueprint(leave_bp, url_prefix="/api/leave")
 
 @app.route("/")
 def home():
