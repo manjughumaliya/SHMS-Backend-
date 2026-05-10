@@ -193,3 +193,15 @@ def get_parents():
         })
 
     return jsonify(result), 200
+
+@admin_bp.route("/dashboard-stats", methods=["GET"])
+def dashboard_stats():
+    total_students = Student.query.count()
+    students_in = Student.query.filter_by(inside_hostel=True).count()
+    students_out = Student.query.filter_by(inside_hostel=False).count()
+
+    return jsonify({
+        "totalStudents": total_students,
+        "studentsIn": students_in,
+        "studentsOut": students_out
+    }), 200
