@@ -11,7 +11,7 @@ from routes.parent_routes import parent_bp
 from routes.entry_exit_routes import entry_exit_bp
 from routes.notification_routes import notification_bp
 from routes.leave_routes import leave_bp
-
+from routes.complaint_routes import complaint_bp
 app = Flask(__name__)
 app.config.from_object(Config)
 
@@ -27,6 +27,7 @@ app.register_blueprint(parent_bp, url_prefix="/api/parent")
 app.register_blueprint(entry_exit_bp, url_prefix="/api/entry-exit")
 app.register_blueprint(notification_bp, url_prefix="/api/notifications")
 app.register_blueprint(leave_bp, url_prefix="/api/leave")
+app.register_blueprint(complaint_bp, url_prefix="/api/complaints")
 
 @app.route("/")
 def home():

@@ -113,3 +113,30 @@ class LeaveRequest(db.Model):
     )
 
     student = db.relationship("Student", backref="leave_requests")
+
+    from database import db
+from datetime import datetime
+
+
+class Complaint(db.Model):
+    __tablename__ = "complaints"
+
+    id = db.Column(db.Integer, primary_key=True)
+    complaint_id = db.Column(db.String(20), unique=True, nullable=False)
+
+    student_id = db.Column(db.Integer, db.ForeignKey("students.id"), nullable=False)
+
+    category = db.Column(db.String(100), nullable=False)
+    description = db.Column(db.Text, nullable=False)
+    priority = db.Column(db.String(20), nullable=False)  # Low / Medium / High
+
+    status = db.Column(db.String(30), default="Open")  
+    # Open / In Progress / Resolved / Closed
+
+    submitted_on = db.Column(db.DateTime, default=datetime.utcnow)
+
+    resolved_by_role = db.Column(db.String(50), nullable=True)  # Admin / Warden
+    resolved_by_id = db.Column(db.Integer, nullable=True)
+
+    student = db.relationship("Student", backref="complaints")
+    
