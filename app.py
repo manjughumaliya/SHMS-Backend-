@@ -10,7 +10,7 @@ from routes.warden_routes import warden_bp
 from routes.parent_routes import parent_bp
 from routes.entry_exit_routes import entry_exit_bp
 from routes.notification_routes import notification_bp
-from leave_routes import leave_bp
+from routes.leave_routes import leave_bp
 
 app = Flask(__name__)
 app.config.from_object(Config)
